@@ -1,0 +1,71 @@
+import { notFound } from "next/navigation";
+import { fetchAllSourcesLatest, fetchRssFeed, PUBLICATION_SOURCES } from "@/lib/rss";
+import { NewsDashboard } from "@/components/news/NewsDashboard";
+import { getGlobalSiteSettings } from "@/lib/serverSettings";
+import { PublicationSourceId } from "@/types/news";
+import type { Metadata } from "next";
+
+export const revalidate = 60;
+
+interface SourcePageProps {
+  params: Promise<{
+    source: string;
+  }>;
+}
+
+const VALID_SOURCES = new Set<string>(PUBLICATION_SOURCES.map((p) => p.id));
+
+export async function generateMetadata({ params }: SourcePageProps): Promise<Metadata> {
+  const { source } = await params;
+  const pub = PUBLICATION_SOURCES.find((p) => p.id === source);
+  if (!pub) {
+    return { title: "Vne Reader - Học Tiếng Anh Qua Báo" };
+  }
+  return {
+    title: `${pub.name} | VnE Reader`,
+    description: pub.tagline || pub.description
+  };
+}
+
+export default async function SourcePage({ params }: SourcePageProps) {
+  const { source } = await params;
+
+  if (!VALID_SOURCES.has(source)) {
+    notFound();
+  }
+
+  const sourceId = source as PublicationSourceId;
+
+  let defaultChannel = "home";
+  if (source === "hony") defaultChannel = "hony-all";
+  else if (source === "bbc") defaultChannel = "bbc-world";
+  else if (source === "guardian") defaultChannel = "guardian-world";
+  else if (source === "npr") defaultChannel = "npr-all";
+  else if (source === "theconversation") defaultChannel = "theconversation-all";
+  else if (source === "propublica") defaultChannel = "propublica-all";
+  else if (source === "wikinews") defaultChannel = "wikinews-all";
+  else if (source === "gutenberg") defaultChannel = "gutenberg-all";
+  else if (source === "globalvoices") defaultChannel = "globalvoices-all";
+  else if (source === "kids") defaultChannel = "kids-gaming";
+
+  const [initialSiteSettings, { combined }] = await Promise.all([
+    getGlobalSiteSettings(),
+    fetchAllSourcesLatest()
+  ]);
+
+  if (!initialSiteSettings.enabledSources.includes(sourceId)) {
+    notFound();
+  }
+
+  const articles = await fetchRssFeed(defaultChannel, sourceId);
+
+  return (
+    <NewsDashboard
+      initialArticles={articles}
+      initialChannel={defaultChannel}
+      initialSource={source as any}
+      allLatestArticles={combined}
+      initialSiteSettings={initialSiteSettings}
+    />
+  );
+}

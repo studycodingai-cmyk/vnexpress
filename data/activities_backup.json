@@ -1,0 +1,34 @@
+[
+  {
+    "id": "act_1793867854586_ug3u6",
+    "userId": "google_103616765975338903894",
+    "userEmail": "studycodingai@gmail.com",
+    "userName": "Lee Hair",
+    "actionType": "PAGE_VIEW",
+    "sourceId": null,
+    "channelId": null,
+    "articleTitle": null,
+    "articleUrl": null,
+    "articleSlug": null,
+    "metadata": {},
+    "deviceInfo": "Desktop • MacIntel",
+    "ipAddress": "::1",
+    "createdAt": "2026-11-05T08:37:34.586Z"
+  },
+  {
+    "id": "act_1793867851792_d5gqm",
+    "userId": "google_103616765975338903894",
+    "userEmail": "studycodingai@gmail.com",
+    "userName": "Lee Hair",
+    "actionType": "VIEW_SOURCE",
+    "sourceId": "kids",
+    "channelId": null,
+    "articleTitle": null,
+    "articleUrl": null,
+    "articleSlug": null,
+    "metadata": {},
+    "deviceInfo": "Desktop • MacIntel",
+    "ipAddress": "::1",
+    "createdAt": "2026-11-05T08:37:31.792Z"
+  }
+]
